@@ -54,6 +54,18 @@ jobs:
           javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/CatchRateModifier.class || echo "no encontrada en esa ruta"
           echo "===== Buscando MultiplierModifier en todo el jar ====="
           find /tmp/cobblemon-extract -iname "*MultiplierModifier*"
+          echo "===== Buscando definiciones JSON de pokeball dentro del jar ====="
+          find /tmp/cobblemon-extract/data -ipath "*pokeball*" | head -30
+          echo "----- contenido de un ejemplo de JSON de pokeball -----"
+          EXAMPLE=$(find /tmp/cobblemon-extract/data -ipath "*pokeball*" -name "*.json" | head -n 1)
+          echo "Ejemplo encontrado: $EXAMPLE"
+          if [ -n "$EXAMPLE" ]; then cat "$EXAMPLE"; fi
+          echo "----- otro ejemplo (great_ball o ultra_ball si existe) -----"
+          EXAMPLE2=$(find /tmp/cobblemon-extract/data -ipath "*pokeball*" -iname "*ultra_ball*.json" | head -n 1)
+          if [ -n "$EXAMPLE2" ]; then echo "Ejemplo2: $EXAMPLE2"; cat "$EXAMPLE2"; fi
+          echo "===== Buscando como Cobblemon registra los items de pokeball (CobblemonItems) ====="
+          find /tmp/cobblemon-extract -iname "CobblemonItems*.class"
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/CobblemonItems.class 2>&1 | head -80
 
       - name: Subir el jar compilado (si se genero)
         if: always()
