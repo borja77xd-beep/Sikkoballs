@@ -28,9 +28,34 @@ jobs:
           gradle-version: '8.10.2'
 
       - name: Compilar
+        continue-on-error: true
         run: gradle build --stacktrace
 
-      - name: Subir el jar compilado
+      - name: Inspeccionar la API real de Cobblemon (diagnostico)
+        if: always()
+        run: |
+          set -x
+          JAR=$(find ~/.gradle/caches/modules-2/files-2.1/maven.modrinth/cobblemon -name "cobblemon-*.jar" | head -n 1)
+          echo "Jar encontrado: $JAR"
+          if [ -z "$JAR" ]; then
+            echo "No se encontro el jar de Cobblemon en la cache, no se puede inspeccionar."
+            exit 0
+          fi
+          rm -rf /tmp/cobblemon-extract
+          mkdir -p /tmp/cobblemon-extract
+          unzip -o -q "$JAR" -d /tmp/cobblemon-extract
+          echo "===== PokeBall (constructor real) ====="
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/pokeball/PokeBall.class || echo "no encontrada en esa ruta"
+          echo "===== PokeBalls (funciones de registro) ====="
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/PokeBalls.class || echo "no encontrada en esa ruta"
+          echo "===== PokeBallItem ====="
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/item/PokeBallItem.class || echo "no encontrada en esa ruta"
+          echo "===== CatchRateModifier ====="
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/CatchRateModifier.class || echo "no encontrada en esa ruta"
+          echo "===== Buscando MultiplierModifier en todo el jar ====="
+          find /tmp/cobblemon-extract -iname "*MultiplierModifier*"
+
+      - name: Subir el jar compilado (si se genero)
         if: always()
         uses: actions/upload-artifact@v4
         with:
