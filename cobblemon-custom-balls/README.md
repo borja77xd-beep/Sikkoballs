@@ -1,5 +1,10 @@
 # Custom Cobblemon Balls (base de mod)
 
+> **Flujo 100% desde la web de GitHub (sin instalar nada):** este repo incluye un
+> workflow de GitHub Actions (`.github/workflows/build.yml`) que compila el mod
+> automáticamente en la nube cada vez que subís un cambio. No hace falta IntelliJ,
+> terminal ni Gradle local. Ver la sección "Cómo trabajar 100% desde GitHub" más abajo.
+
 Base de addon Fabric para Cobblemon 1.21.1 que registra 4 Pokéball nuevas:
 
 - **SikkoBall** — `sikko_ball` — x2.5 (nivel Ultra Ball o mejor; Ultra Ball vanilla = 2.0x)
@@ -19,6 +24,25 @@ verificación más abajo).
 
 Ninguna tiene receta de crafteo. Las 4 aparecen en un creative tab propio ("Custom
 Cobblemon Balls").
+
+## Cómo trabajar 100% desde GitHub (sin apps locales)
+
+1. **Subir esta carpeta**: en tu repo de GitHub, botón "Add file" → "Upload files", y
+   arrastrá todo el contenido de esta carpeta (incluida la carpeta oculta `.github/`,
+   asegurate de que tu explorador de archivos muestre archivos ocultos al arrastrar, o
+   subila por partes si tu navegador no arrastra carpetas ocultas).
+2. **Cada vez que subís o editás algo**, andá a la pestaña **"Actions"** de tu repo. Vas
+   a ver un workflow llamado "Compilar mod" corriendo automáticamente.
+   - Si termina en ✅ verde: entrá a esa ejecución y bajá hasta "Artifacts" — ahí está
+     el `.jar` ya compilado, listo para poner en tu carpeta `mods/` de Minecraft.
+   - Si termina en ❌ rojo: hacé clic en el paso que falló para ver el error, y pegámelo
+     acá para que te diga qué cambiar.
+3. **Para editar código sin instalar nada**: abrí cualquier archivo `.kt` en GitHub y
+   tocá el ícono de lápiz (Edit). Cambiás el texto, escribís un mensaje de commit abajo,
+   y le das a "Commit changes" — eso ya dispara una nueva compilación automática.
+4. **Alternativa más cómoda para editar varios archivos**: en la página principal del
+   repo, apretá la tecla `.` (punto) en el teclado. Se abre un editor tipo VS Code
+   directamente en el navegador (github.dev), sin instalar nada.
 
 ## Qué es 100% funcional tal cual está
 
@@ -46,6 +70,14 @@ versión de Cobblemon que tengas. Antes de compilar:
 4. Ajustá los `import` y las llamadas en `CustomPokeBalls.kt` y `ModItems.kt` según lo
    que encuentres. Es un ajuste de una tarde, no una reescritura completa: la
    estructura general (qué archivo hace qué) ya está.
+
+### Si trabajás 100% desde GitHub (sin decompilar nada vos)
+
+No hace falta que decompiles nada a mano. La forma más simple trabajando solo desde la
+web es: dejá que GitHub Actions intente compilar, y si falla, copiame el error exacto
+que aparece en la pestaña "Actions". Con ese error puedo saber qué nombre de
+clase/función real hay que usar y te paso el cambio para que lo pegues en el editor de
+GitHub. Puede llevar 2-3 intentos hasta que compile del todo, es normal.
 
 Ver los comentarios dentro de `CustomPokeBalls.kt` para más detalle línea por línea.
 
