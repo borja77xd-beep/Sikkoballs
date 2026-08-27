@@ -66,6 +66,19 @@ jobs:
           echo "===== Buscando como Cobblemon registra los items de pokeball (CobblemonItems) ====="
           find /tmp/cobblemon-extract -iname "CobblemonItems*.class"
           javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/CobblemonItems.class 2>&1 | head -80
+          echo "===== Todas las clases bajo api/pokeball (para ubicar adaptadores/factories) ====="
+          find /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball -type f
+          echo "===== Todas las clases bajo pokeball (paquete no-api) ====="
+          find /tmp/cobblemon-extract/com/cobblemon/mod/common/pokeball -type f
+          echo "===== Strings relevantes dentro de PokeBalls.class (resourcePath, id) ====="
+          strings /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/PokeBalls.class | grep -iE "pokeball|data/|^cobblemon$" | sort -u
+          echo "===== Strings dentro de MultiplierModifier.class ====="
+          strings /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/modifiers/MultiplierModifier.class
+          echo "===== Strings dentro de CatchRateModifier\$Companion.class (si existe) ====="
+          find /tmp/cobblemon-extract -iname "CatchRateModifier*.class"
+          for f in $(find /tmp/cobblemon-extract -iname "CatchRateModifier*.class"); do echo "--- $f ---"; strings "$f" | grep -iE "cobblemon:|multiplier|guarant|type"; done
+          echo "===== javap de MultiplierModifier (constructor real) ====="
+          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/modifiers/MultiplierModifier.class
 
       - name: Subir el jar compilado (si se genero)
         if: always()
