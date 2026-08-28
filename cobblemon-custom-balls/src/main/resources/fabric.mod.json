@@ -11,7 +11,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ccballs.CustomCobblemonBalls"
+			{
+				"adapter": "kotlin",
+				"value": "com.example.ccballs.CustomCobblemonBalls"
+			}
 		]
 	},
 	"depends": {
