@@ -1,8 +1,8 @@
 package com.example.ccballs
 
-// AVISO: PokeBallItem es la clase de item que usa Cobblemon para sus propias balls.
-// Igual que en CustomPokeBalls.kt, el paquete/constructor exacto puede variar segun version;
-// ajusta el import y la forma de instanciar si tu decompilado difiere.
+// Confirmado real (diseccionando el addon "Cobblemon Extra Balls"): PokeBallItem se
+// registra como un Item comun de Minecraft. Cobblemon no necesita ningun paso de
+// registro aparte para reconocerlo como pokeball -- alcanza con que el Item exista.
 import com.cobblemon.mod.common.item.PokeBallItem
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
