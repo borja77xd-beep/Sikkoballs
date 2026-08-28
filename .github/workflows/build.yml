@@ -33,6 +33,7 @@ jobs:
 
       - name: Inspeccionar la API real de Cobblemon (diagnostico)
         if: always()
+        shell: bash --noprofile --norc -o pipefail {0}
         run: |
           set -x
           JAR=$(find ~/.gradle/caches/modules-2/files-2.1/maven.modrinth/cobblemon -name "cobblemon-*.jar" | head -n 1)
@@ -71,19 +72,4 @@ jobs:
           echo "===== Todas las clases bajo pokeball (paquete no-api) ====="
           find /tmp/cobblemon-extract/com/cobblemon/mod/common/pokeball -type f
           echo "===== Strings relevantes dentro de PokeBalls.class (resourcePath, id) ====="
-          strings /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/PokeBalls.class | grep -iE "pokeball|data/|^cobblemon$" | sort -u
-          echo "===== Strings dentro de MultiplierModifier.class ====="
-          strings /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/modifiers/MultiplierModifier.class
-          echo "===== Strings dentro de CatchRateModifier\$Companion.class (si existe) ====="
-          find /tmp/cobblemon-extract -iname "CatchRateModifier*.class"
-          for f in $(find /tmp/cobblemon-extract -iname "CatchRateModifier*.class"); do echo "--- $f ---"; strings "$f" | grep -iE "cobblemon:|multiplier|guarant|type"; done
-          echo "===== javap de MultiplierModifier (constructor real) ====="
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/modifiers/MultiplierModifier.class
-
-      - name: Subir el jar compilado (si se genero)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ccballs-jar
-          path: cobblemon-custom-balls/build/libs/*.jar
-          if-no-files-found: warn
+          strings /tmp/cobblemon-extract/com/cobblemon/mod/com
