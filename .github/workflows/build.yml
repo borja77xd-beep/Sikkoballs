@@ -31,45 +31,14 @@ jobs:
         continue-on-error: true
         run: gradle build --stacktrace
 
-      - name: Inspeccionar la API real de Cobblemon (diagnostico)
+      - name: Diagnostico
         if: always()
-        shell: bash --noprofile --norc -o pipefail {0}
-        run: |
-          set -x
-          JAR=$(find ~/.gradle/caches/modules-2/files-2.1/maven.modrinth/cobblemon -name "cobblemon-*.jar" | head -n 1)
-          echo "Jar encontrado: $JAR"
-          if [ -z "$JAR" ]; then
-            echo "No se encontro el jar de Cobblemon en la cache, no se puede inspeccionar."
-            exit 0
-          fi
-          rm -rf /tmp/cobblemon-extract
-          mkdir -p /tmp/cobblemon-extract
-          unzip -o -q "$JAR" -d /tmp/cobblemon-extract
-          echo "===== PokeBall (constructor real) ====="
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/pokeball/PokeBall.class || echo "no encontrada en esa ruta"
-          echo "===== PokeBalls (funciones de registro) ====="
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/PokeBalls.class || echo "no encontrada en esa ruta"
-          echo "===== PokeBallItem ====="
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/item/PokeBallItem.class || echo "no encontrada en esa ruta"
-          echo "===== CatchRateModifier ====="
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball/catching/CatchRateModifier.class || echo "no encontrada en esa ruta"
-          echo "===== Buscando MultiplierModifier en todo el jar ====="
-          find /tmp/cobblemon-extract -iname "*MultiplierModifier*"
-          echo "===== Buscando definiciones JSON de pokeball dentro del jar ====="
-          find /tmp/cobblemon-extract/data -ipath "*pokeball*" | head -30
-          echo "----- contenido de un ejemplo de JSON de pokeball -----"
-          EXAMPLE=$(find /tmp/cobblemon-extract/data -ipath "*pokeball*" -name "*.json" | head -n 1)
-          echo "Ejemplo encontrado: $EXAMPLE"
-          if [ -n "$EXAMPLE" ]; then cat "$EXAMPLE"; fi
-          echo "----- otro ejemplo (great_ball o ultra_ball si existe) -----"
-          EXAMPLE2=$(find /tmp/cobblemon-extract/data -ipath "*pokeball*" -iname "*ultra_ball*.json" | head -n 1)
-          if [ -n "$EXAMPLE2" ]; then echo "Ejemplo2: $EXAMPLE2"; cat "$EXAMPLE2"; fi
-          echo "===== Buscando como Cobblemon registra los items de pokeball (CobblemonItems) ====="
-          find /tmp/cobblemon-extract -iname "CobblemonItems*.class"
-          javap -p /tmp/cobblemon-extract/com/cobblemon/mod/common/CobblemonItems.class 2>&1 | head -80
-          echo "===== Todas las clases bajo api/pokeball (para ubicar adaptadores/factories) ====="
-          find /tmp/cobblemon-extract/com/cobblemon/mod/common/api/pokeball -type f
-          echo "===== Todas las clases bajo pokeball (paquete no-api) ====="
-          find /tmp/cobblemon-extract/com/cobblemon/mod/common/pokeball -type f
-          echo "===== Strings relevantes dentro de PokeBalls.class (resourcePath, id) ====="
-          strings /tmp/cobblemon-extract/com/cobblemon/mod/com
+        run: bash diagnose.sh
+
+      - name: Subir el jar compilado (si se genero)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ccballs-jar
+          path: cobblemon-custom-balls/build/libs/*.jar
+          if-no-files-found: warn
