@@ -13,18 +13,18 @@ rm -rf "$EXTRACT"
 mkdir -p "$EXTRACT"
 unzip -o -q "$JAR" -d "$EXTRACT"
 
-BASE="$EXTRACT/com/cobblemon/mod/common/api/pokeball/catching/modifiers"
+echo "== Buscando clases que mencionan registerType =="
+CANDIDATES=$(grep -rl "registerType" "$EXTRACT" --include="*.class" 2>/dev/null)
+echo "$CANDIDATES"
 
-echo "== GuaranteedModifier (constructor) =="
-javap -p "$BASE/GuaranteedModifier.class"
+echo "== Contexto de cada uso de registerType =="
+for f in $CANDIDATES; do
+  echo "--- $f ---"
+  javap -c -p "$f" 2>/dev/null | grep -B3 "registerType"
+done
 
-echo "== MultiplierModifier (constructor) =="
-javap -p "$BASE/MultiplierModifier.class"
-
-echo "== CatchRateModifiers (funciones factory) =="
-javap -p "$BASE/CatchRateModifiers.class"
-
-echo "== CatchRateModifierAdapter (bytecode, buscar strings tipo) =="
-javap -c -p "$BASE/CatchRateModifierAdapter.class" | grep -i "String"
+echo "== Buscando donde se instancia/usa MultiplierModifier o GuaranteedModifier junto a un string =="
+CANDIDATES2=$(grep -rl "MultiplierModifier\|GuaranteedModifier" "$EXTRACT" --include="*.class" 2>/dev/null | grep -vi "modifiers/MultiplierModifier.class\|modifiers/GuaranteedModifier.class\|DynamicMultiplierModifier.class")
+echo "$CANDIDATES2"
 
 echo "== Fin diagnostico =="
