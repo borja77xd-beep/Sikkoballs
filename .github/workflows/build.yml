@@ -28,14 +28,9 @@ jobs:
           gradle-version: '8.10.2'
 
       - name: Compilar
-        continue-on-error: true
         run: gradle build --stacktrace
 
-      - name: Diagnostico
-        if: always()
-        run: bash diagnose.sh
-
-      - name: Subir el jar compilado (si se genero)
+      - name: Subir el jar compilado
         if: always()
         uses: actions/upload-artifact@v4
         with:
