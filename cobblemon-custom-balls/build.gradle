@@ -61,6 +61,15 @@ kotlin {
 	jvmToolchain(21)
 }
 
+// Cobblemon esta compilado con una version de Kotlin mas nueva que la nuestra (necesaria
+// para que el remapeo de Loom no rompa, ver README). Este flag le dice al compilador que
+// igual intente leer esas clases en vez de bloquear con un error de "version incompatible".
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+	compilerOptions {
+		freeCompilerArgs.add("-Xskip-metadata-version-check")
+	}
+}
+
 java {
 	withSourcesJar()
 }
