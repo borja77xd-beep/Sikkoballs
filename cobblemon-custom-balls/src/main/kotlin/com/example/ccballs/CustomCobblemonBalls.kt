@@ -19,5 +19,9 @@ object CustomCobblemonBalls : ModInitializer {
 
 		// Creative tab propio del mod
 		ModItemGroups.register()
+
+		// Anota nuestras balls en el registro interno de Cobblemon (PokeBalls) para que
+		// el cliente pueda resolverlas al lanzarlas -- ver PokeBallInjector.kt
+		PokeBallInjector.register()
 	}
 }
