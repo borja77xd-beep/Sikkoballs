@@ -15,11 +15,17 @@ object ModItems {
 
 	// Notar: NO se define ningun "Item.Properties().food(...)" ni receta -> sin crafting.
 	// La obtencion es solo via creative tab (ModItemGroups) o comandos/loot tables que agregues vos.
+	//
+	// IMPORTANTE: PokeBall tiene una propiedad "item" (lateinit) que Cobblemon usa
+	// internamente al procesar una captura (PokemonCapturedEvent). Para sus propias balls,
+	// Cobblemon la vincula automaticamente en su propio arranque; como el nuestro corre
+	// aparte, hay que vincularla nosotros mismos con ".also { pokeBall.item = it }",
+	// si no crashea con "lateinit property item has not been initialized" al capturar.
 
-	val SIKKO_BALL: Item = PokeBallItem(CustomPokeBalls.SIKKO_BALL)
-	val TOURNAMENT_SIKKO_BALL: Item = PokeBallItem(CustomPokeBalls.TOURNAMENT_SIKKO_BALL)
-	val GS_BALL: Item = PokeBallItem(CustomPokeBalls.GS_BALL)
-	val ESCORIA_BALL: Item = PokeBallItem(CustomPokeBalls.ESCORIA_BALL)
+	val SIKKO_BALL: PokeBallItem = PokeBallItem(CustomPokeBalls.SIKKO_BALL).also { CustomPokeBalls.SIKKO_BALL.item = it }
+	val TOURNAMENT_SIKKO_BALL: PokeBallItem = PokeBallItem(CustomPokeBalls.TOURNAMENT_SIKKO_BALL).also { CustomPokeBalls.TOURNAMENT_SIKKO_BALL.item = it }
+	val GS_BALL: PokeBallItem = PokeBallItem(CustomPokeBalls.GS_BALL).also { CustomPokeBalls.GS_BALL.item = it }
+	val ESCORIA_BALL: PokeBallItem = PokeBallItem(CustomPokeBalls.ESCORIA_BALL).also { CustomPokeBalls.ESCORIA_BALL.item = it }
 
 	fun register() {
 		registerItem("sikko_ball", SIKKO_BALL)
