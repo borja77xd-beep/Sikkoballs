@@ -22,6 +22,16 @@ object CustomPokeBalls {
 	private fun id(path: String): ResourceLocation =
 		ResourceLocation.fromNamespaceAndPath(CustomCobblemonBalls.MOD_ID, path)
 
+	// model2d y model3d NO son nombres de textura, son referencias a archivos de modelo
+	// de item (models/item/....json). Convencion confirmada diseccionando el addon real:
+	//   model2d -> "item/<nombre>"        (models/item/<nombre>.json)
+	//   model3d -> "item/<nombre>_model"  (models/item/<nombre>_model.json)
+	private fun model2dId(path: String): ResourceLocation =
+		ResourceLocation.fromNamespaceAndPath(CustomCobblemonBalls.MOD_ID, "item/$path")
+
+	private fun model3dId(path: String): ResourceLocation =
+		ResourceLocation.fromNamespaceAndPath(CustomCobblemonBalls.MOD_ID, "item/${path}_model")
+
 	private fun ball(
 		path: String,
 		catchRateModifier: CatchRateModifier,
@@ -32,8 +42,8 @@ object CustomPokeBalls {
 		catchRateModifier,
 		emptyList<CaptureEffect>(),
 		waterDragValue,
-		id(path), // model2d: referencia al modelo/icono 2D que vos vas a agregar despues
-		id(path), // model3d: referencia al modelo 3D (bedrock/geckolib) que vos vas a agregar despues
+		model2dId(path),
+		model3dId(path),
 		throwPower,
 		false // ancient
 	)
